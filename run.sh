@@ -1,0 +1,1 @@
+curl --request GET \ --url https://api.x.com/2/users/by/username/simon375825 \ --header 'Authorization: Bearer AAAAAAAAAAAAAAAAAAAAAKa33wEAAAAA0QJdb5SwerbduhjH%2F8k%2FVgpfxuM%3DzKZYSLWhNA2BQWkLzFcQMywbMCEyfdlsXerwpuNy2tmMjCCPJR'
