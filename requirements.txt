@@ -1,1 +1,8 @@
 django
+tweepy
+langid
+pysentimiento 
+transformers 
+torch 
+pandas  
+python-dotenv
