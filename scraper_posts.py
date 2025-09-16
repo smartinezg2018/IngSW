@@ -2,7 +2,6 @@ import requests
 import time
 
 # Replace with your token
-BEARER_TOKEN = "AAAAAAAAAAAAAAAAAAAAAKa33wEAAAAA0QJdb5SwerbduhjH%2F8k%2FVgpfxuM%3DzKZYSLWhNA2BQWkLzFcQMywbMCEyfdlsXerwpuNy2tmMjCCPJR"
 
 def create_headers(bearer_token):
     return {"Authorization": f"Bearer {bearer_token}"}
