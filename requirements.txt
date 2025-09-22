@@ -6,3 +6,5 @@ transformers
 torch 
 pandas  
 python-dotenv
+pillow
+ngrok

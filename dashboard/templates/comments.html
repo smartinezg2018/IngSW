@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Posts Table</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container-fluid py-4">
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Posts</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th scope="col">Media ID</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Publish date</th>
+                                    <th scope="col">Caption</th>
+                                    <th scope="col">Number of comments</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for post in posts %}
+                                <tr>
+                                    <td><code class="text-primary">{{ post.media_id }}</code></td>
+                                    <td class="text-truncate" style="max-width: 200px;" title="{{ post.description }}">{{ post.description }}</td>
+                                    <td><span class="badge bg-info">{{ post.date }}</span></td>
+                                    <td class="text-truncate" style="max-width: 150px;" title="{{ post.caption }}">{{ post.caption }}</td>
+                                    {% comment %} <td class="text-truncate" style="max-width: 150px;" title="{{ post.caption }}">{{ post.caption }}</td> {% endcomment %}
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-4">
+                                        <i class="bi bi-inbox"></i>
+                                        No posts available
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
