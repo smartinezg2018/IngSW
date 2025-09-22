@@ -6,8 +6,9 @@ from django.conf import settings
 from dotenv import load_dotenv
 from pathlib import Path
 import json
-from dashboard.models import Post
+from dashboard.models import Post, Comment
 from .models import Post
+from django.db.models import Count
 
 import time
 import http.server
@@ -117,5 +118,42 @@ def save_forms(request):
 
 
 def comments(request):
+    business_discovery_parameters = "id,comments_count"
+    other_parameters = "comments{id,text,user,username}"
+    fields = business_discovery_parameters + "," + other_parameters
 
-    return render(request,"comments.html",{"posts": Post.objects.all()})
+    url = f"https://graph.facebook.com/v21.0/{settings.IG_USER_ID}/media"
+    payload = {
+    "fields": fields,
+    "access_token" : settings.LONG_ACCESS_TOKEN
+    }
+
+    response = requests.get(url, params=payload)
+    data = response.json()
+    print(data)
+    
+    for post_data in data['data']:
+        media_id = post_data['id']
+
+        try:
+            post = Post.objects.get(media_id=media_id)  # get Post by media_id
+        except Post.DoesNotExist:
+            print(f"Post {media_id} not found, skipping.")
+            continue
+
+        # Only if there are comments
+        if post_data.get('comments') and 'data' in post_data['comments']:
+            for c in post_data['comments']['data']:
+                Comment.objects.update_or_create(
+                    comment_id=c['id'],   # unique identifier
+                    defaults={
+                        "post": post,
+                        "text": c.get("text", ""),
+                        "user_id": c.get("user", {}).get("id"),
+                        "username": c.get("username"),
+                    }
+                )
+    
+    
+    posts = Post.objects.annotate(comment_count=Count('comments'))
+    return render(request,"comments.html",{"posts": posts})

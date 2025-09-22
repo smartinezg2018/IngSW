@@ -31,6 +31,7 @@ class Comment(models.Model):
     text = models.TextField()
     user_id = models.CharField(max_length=50,blank=True, null=True)
     username = models.CharField(max_length=50,blank=True, null=True)  
+    
 
     def __str__(self):
         return f"Comment {self.comment_id} on Post {self.post.media_id}"
