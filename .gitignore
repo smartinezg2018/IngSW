@@ -1,0 +1,41 @@
+# Entorno virtual
+venv/
+.venv/
+env/
+.env/
+
+# Base de datos
+*.sqlite3
+db.sqlite3
+
+# Archivos de Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Django específico
+*.log
+local_settings.py
+db.sqlite3-journal
+
+# Archivos de medios
+media/
+
+# Archivos estáticos (se generan automáticamente)
+staticfiles/
+
+# Variables de entorno
+.env
+.env.local
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+Desktop.ini
