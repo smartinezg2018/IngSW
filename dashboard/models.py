@@ -30,7 +30,7 @@ class Comment(models.Model):
     )
     text = models.TextField()
     user_id = models.CharField(max_length=50,blank=True, null=True)
-    username = models.CharField(max_length=50,blank=True, null=True)  
+    username = models.CharField(max_length=50,blank=True, null=True) 
     
 
     def __str__(self):

@@ -155,5 +155,5 @@ def comments(request):
                 )
     
     
-    posts = Post.objects.annotate(comment_count=Count('comments'))
+    posts = Post.objects.annotate(comment_count=Count('comments')).order_by('-comment_count') 
     return render(request,"comments.html",{"posts": posts})
