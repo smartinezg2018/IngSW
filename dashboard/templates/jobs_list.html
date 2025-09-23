@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Ofertas de trabajo</h1>
+<div style="margin: 12px 0;">
+  <form method="get">
+    <input type="text" name="q" placeholder="Buscar..." value="{{ q }}"/>
+    <input type="text" name="company" placeholder="Empresa" value="{{ company }}"/>
+    <button type="submit">Filtrar</button>
+    <a href="{% url 'jobs_upload' %}">Cargar CSV</a>
+  </form>
+</div>
+<table border="1" cellspacing="0" cellpadding="6">
+  <thead>
+    <tr>
+      <th>Título</th>
+      <th>Empresa</th>
+      <th>Ubicación</th>
+      <th>Fecha</th>
+      <th>Salario</th>
+      <th>Estado</th>
+      <th>Enlace</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for o in offers %}
+    <tr>
+      <td>{{ o.title }}</td>
+      <td>{{ o.company }}</td>
+      <td>{{ o.location }}</td>
+      <td>{{ o.posted_date|default:"-" }}</td>
+      <td>{% if o.salary %}${{ o.salary }}{% else %}-{% endif %}</td>
+      <td>{{ o.get_status_display }}</td>
+      <td>{% if o.link %}<a href="{{ o.link }}" target="_blank">Ver</a>{% else %}-{% endif %}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="7">Sin ofertas aún.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

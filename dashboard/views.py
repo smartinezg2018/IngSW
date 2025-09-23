@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from django.http import JsonResponse
+from django.shortcuts import render, redirect
+from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.conf import settings
@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from pathlib import Path
 import json
 
-from dashboard.models import Post, Comment
+from dashboard.models import Post, Comment, JobOffer, AgentConfig
 from .models import Post
 from django.db.models import Count
 
@@ -21,6 +21,9 @@ import subprocess
 import time
 import json
 import requests
+import csv
+from io import TextIOWrapper, StringIO
+from django.db import models
 
 def post_instagram(post : Post):
     
@@ -159,3 +162,94 @@ def comments(request):
     
     posts = Post.objects.annotate(comment_count=Count('comments')).order_by('-comment_count') 
     return render(request,"comments.html",{"posts": posts})
+
+
+def jobs_list(request):
+    """List all job offers with simple filtering by company or text query."""
+    q = request.GET.get("q")
+    company = request.GET.get("company")
+    offers = JobOffer.objects.all()
+    if company:
+        offers = offers.filter(company__icontains=company)
+    if q:
+        offers = offers.filter(models.Q(title__icontains=q) | models.Q(description__icontains=q) | models.Q(location__icontains=q))
+    return render(request, "jobs_list.html", {"offers": offers, "q": q or "", "company": company or ""})
+
+
+@csrf_exempt  # For quick enablement; ideally use CSRF token on the form
+def jobs_upload(request):
+    """
+    Upload a CSV file with headers: title,company,location,description,link,salary,posted_date(YYYY-MM-DD)
+    Creates or updates offers based on (title, company, posted_date).
+    """
+    if request.method == "POST":
+        f = request.FILES.get("file")
+        if not f:
+            return HttpResponse("No file uploaded", status=400)
+
+        # Decode to text
+        try:
+            text_file = TextIOWrapper(f.file, encoding="utf-8")
+            reader = csv.DictReader(text_file)
+        except Exception:
+            # fallback to reading bytes, then decode
+            content = f.read().decode("utf-8", errors="ignore")
+            reader = csv.DictReader(StringIO(content))
+
+        created, updated, skipped = 0, 0, 0
+        for row in reader:
+            title = (row.get("title") or "").strip()
+            company = (row.get("company") or "").strip()
+            posted_date = (row.get("posted_date") or "").strip()
+            if not title or not company:
+                skipped += 1
+                continue
+
+            defaults = {
+                "location": (row.get("location") or "").strip() or None,
+                "description": (row.get("description") or "").strip() or None,
+                "link": (row.get("link") or "").strip() or None,
+                "status": (row.get("status") or "active").strip() or "active",
+            }
+            # salary
+            salary_str = (row.get("salary") or "").replace(",", "").strip()
+            if salary_str:
+                try:
+                    defaults["salary"] = float(salary_str)
+                except ValueError:
+                    pass
+            # posted_date
+            if posted_date:
+                try:
+                    defaults["posted_date"] = datetime.datetime.strptime(posted_date, "%Y-%m-%d").date()
+                except ValueError:
+                    pass
+
+            obj, was_created = JobOffer.objects.update_or_create(
+                title=title, company=company, posted_date=defaults.get("posted_date"), defaults=defaults
+            )
+            created += 1 if was_created else 0
+            updated += 0 if was_created else 1
+
+        return render(request, "jobs_upload.html", {"created": created, "updated": updated, "skipped": skipped})
+
+    return render(request, "jobs_upload.html")
+
+
+def agent_status(request):
+    """Show current agent status and provide toggle functionality."""
+    agent = AgentConfig.get_instance()
+    return render(request, "agent_status.html", {"agent": agent})
+
+
+@csrf_exempt
+def agent_toggle(request):
+    """Toggle agent activation status."""
+    if request.method == "POST":
+        agent = AgentConfig.get_instance()
+        agent.is_active = not agent.is_active
+        agent.save()
+        status = "activado" if agent.is_active else "desactivado"
+        return JsonResponse({"status": "success", "message": f"Agente {status}", "is_active": agent.is_active})
+    
+    return JsonResponse({"status": "error", "message": "Método no permitido"}, status=405)

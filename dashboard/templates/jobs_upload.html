@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Cargar ofertas de trabajo (CSV)</h1>
+<p>CSV esperado con cabeceras: <code>title,company,location,description,link,salary,posted_date,status</code>. La fecha debe ser YYYY-MM-DD.</p>
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <input type="file" name="file" accept=".csv" required />
+  <button type="submit">Subir</button>
+  <a href="{% url 'jobs_list' %}">Volver a la lista</a>
+</form>
+{% if created or updated or skipped %}
+  <div style="margin-top:12px;">
+    <strong>Resultado:</strong>
+    <ul>
+      <li>Creados: {{ created|default:0 }}</li>
+      <li>Actualizados: {{ updated|default:0 }}</li>
+      <li>Omitidos: {{ skipped|default:0 }}</li>
+    </ul>
+  </div>
+{% endif %}
+{% endblock %}

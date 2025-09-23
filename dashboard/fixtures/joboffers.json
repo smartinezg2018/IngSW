@@ -1,0 +1,18 @@
+[
+  {
+    "model": "dashboard.joboffer",
+    "pk": 1,
+    "fields": {
+      "title": "Desarrollador Backend Python",
+      "company": "TechCorp",
+      "location": "Remoto",
+      "description": "API con Django y PostgreSQL",
+      "link": "https://example.com/jobs/1",
+      "salary": "2500.00",
+      "posted_date": "2025-09-01",
+      "status": "active",
+      "created_at": "2025-09-01T12:00:00Z",
+      "updated_at": "2025-09-01T12:00:00Z"
+    }
+  }
+]

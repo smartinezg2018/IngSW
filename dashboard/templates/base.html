@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IngSW</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 20px; }
+    a { text-decoration: none; color: #0a58ca; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <nav style="margin-bottom: 16px;">
+    <a href="/dashboard/agent/">Agente</a> |
+    <a href="/dashboard/jobs/">Ofertas</a> |
+    <a href="/dashboard/jobs/upload/">Cargar CSV</a> |
+    <a href="/dashboard/comments/">Comentarios IG</a> |
+    <a href="/dashboard/post/">Publicar IG</a>
+  </nav>
+  {% block content %}{% endblock %}
+</body>
+</html>
