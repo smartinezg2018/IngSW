@@ -45,16 +45,12 @@ def post_instagram(post : Post):
     payload = {
         "image_url" : image_url,
         "caption" : caption,
-        "user_tags" : '[{"username":"mountainbetweenus", "x":0.5, "y":0.5}]',
-        "collaborators" : '["mountainbetweenus"]',
         "access_token" : settings.LONG_ACCESS_TOKEN,
     }
     
     response = requests.post(url, params=payload)
     data = response.json()
-    print(json.dumps(data, indent=4))
     creation_id = data["id"]
-    print(f"creation_id : {creation_id}")
 
     # publishing the image
     url = f"https://graph.facebook.com/v17.0/{settings.IG_USER_ID}/media_publish"
@@ -75,6 +71,11 @@ def post_instagram(post : Post):
         "access_token": settings.LONG_ACCESS_TOKEN,
     }
     resp = requests.get(url, params=params)
+    
+    ngrok.terminate()
+    httpd.shutdown()
+    
+    
     data = resp.json()
     print('data: ',data)
 
@@ -88,8 +89,7 @@ def post_instagram(post : Post):
                 post.save()
                 break
     
-    ngrok.terminate()
-    httpd.shutdown()
+
     
 
 
@@ -132,7 +132,7 @@ def comments(request):
 
     response = requests.get(url, params=payload)
     data = response.json()
-    print(data)
+    print(json.dumps(data, indent=2, sort_keys=True))
     
     for post_data in data['data']:
         media_id = post_data['id']
@@ -155,6 +155,7 @@ def comments(request):
                         "username": c.get("username"),
                     }
                 )
+                print(c.get("user", {}).get("id"))
     
     
     posts = Post.objects.annotate(comment_count=Count('comments')).order_by('-comment_count') 
