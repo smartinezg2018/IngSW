@@ -39,3 +39,7 @@ staticfiles/
 .DS_Store
 Thumbs.db
 Desktop.ini
+
+
+
+*.ipynb
