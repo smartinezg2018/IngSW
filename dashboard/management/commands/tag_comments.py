@@ -49,10 +49,13 @@ class Command(BaseCommand):
             qs = qs.filter(post__media_id=opts["post"])
 
         count = 0
-        threshold = getattr(settings, "COMMENT_INTEREST_THRESHOLD", 0.8)
+        threshold = getattr(settings, "COMMENT_INTEREST_THRESHOLD", 0.1)
 
         self.stdout.write(self.style.NOTICE(f"Procesando {qs.count()} comentarios... umbral={threshold}"))
         for c in qs.iterator():
+            if c.status == "REVIEW" or c.status == "not_interested" or  c.status == 'needs_reply' or c.status == 'review':
+                continue
+            print(c.status)
             label, s_score, i_score, lang = analyze_comment(c.text)
             msg = f"[{c.comment_id}] lang={lang} sentiment={label}({s_score}) interest={i_score}"
 

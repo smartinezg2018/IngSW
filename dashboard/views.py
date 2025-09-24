@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.conf import settings
+from django.core.management import call_command
 from dotenv import load_dotenv
 from pathlib import Path
 import json
@@ -10,7 +11,6 @@ import json
 from dashboard.models import Post, Comment
 from .models import Post
 from django.db.models import Count
-
 
 import time
 import http.server
@@ -45,16 +45,12 @@ def post_instagram(post : Post):
     payload = {
         "image_url" : image_url,
         "caption" : caption,
-        "user_tags" : '[{"username":"mountainbetweenus", "x":0.5, "y":0.5}]',
-        "collaborators" : '["mountainbetweenus"]',
         "access_token" : settings.LONG_ACCESS_TOKEN,
     }
     
     response = requests.post(url, params=payload)
     data = response.json()
-    print(json.dumps(data, indent=4))
     creation_id = data["id"]
-    print(f"creation_id : {creation_id}")
 
     # publishing the image
     url = f"https://graph.facebook.com/v17.0/{settings.IG_USER_ID}/media_publish"
@@ -75,6 +71,11 @@ def post_instagram(post : Post):
         "access_token": settings.LONG_ACCESS_TOKEN,
     }
     resp = requests.get(url, params=params)
+    
+    ngrok.terminate()
+    httpd.shutdown()
+    
+    
     data = resp.json()
     print('data: ',data)
 
@@ -88,8 +89,8 @@ def post_instagram(post : Post):
                 post.save()
                 break
     
-    ngrok.terminate()
-    httpd.shutdown()
+    
+
     
 
 
@@ -163,6 +164,10 @@ def comments(request):
     # Query de comentarios para la tabla de análisis
     comments = Comment.objects.select_related("post").order_by("-last_scored_at")
 
+    # me gustaria que se clasificaran los comentarios aquí
+    
+    call_command("tag_comments")
+    
     # Pasamos ambos al template
     return render(
         request,
