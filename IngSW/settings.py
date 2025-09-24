@@ -44,6 +44,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+#Threshold Comentar
+COMMENT_INTEREST_THRESHOLD = float(os.getenv("COMMENT_INTEREST_THRESHOLD", "0.8"))
+
 
 # Application definition
 
