@@ -1,58 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Posts Table</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-<div class="container-fluid py-4">
-    <div class="row mt-4">
-        <div class="col-md-12">
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Posts</h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-striped table-hover">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th scope="col">Media ID</th>
-                                    <th scope="col">Description</th>
-                                    <th scope="col">Publish date</th>
-                                    <th scope="col">Caption</th>
-                                    <th scope="col">Number of comments</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for post in posts %}
-                                <tr>
-                                    <td><code class="text-primary">{{ post.media_id }}</code></td>
-                                    <td class="text-truncate" style="max-width: 200px;" title="{{ post.description }}">{{ post.description }}</td>
-                                    <td><span class="badge bg-info">{{ post.date }}</span></td>
-                                    <td class="text-truncate" style="max-width: 150px;" title="{{ post.caption }}">{{ post.caption }}</td>
-                                    <td class="text-truncate" style="max-width: 150px;" title="{{ post.caption }}">{{ post.comment_count }}</td>
 
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="4" class="text-center text-muted py-4">
-                                        <i class="bi bi-inbox"></i>
-                                        No posts available
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+<body>
+    <div class="container-fluid py-4">
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Posts</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive mb-4">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th scope="col">Media ID</th>
+                                        <th scope="col">Description</th>
+                                        <th scope="col">Publish date</th>
+                                        <th scope="col">Caption</th>
+                                        <th scope="col">Number of comments</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for post in posts %}
+                                    <tr>
+                                        <td><code class="text-primary">{{ post.media_id }}</code></td>
+                                        <td class="text-truncate" style="max-width: 200px;"
+                                            title="{{ post.description }}">{{ post.description }}</td>
+                                        <td><span class="badge bg-info">{{ post.date }}</span></td>
+                                        <td class="text-truncate" style="max-width: 150px;" title="{{ post.caption }}">
+                                            {{ post.caption }}</td>
+                                        <td>{{ post.comment_count }}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted py-4">
+                                            <i class="bi bi-inbox"></i>
+                                            No posts available
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Nueva sección: Comments Analysis -->
+                        <h5 class="mt-4">Comments Analysis</h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th scope="col">Post</th>
+                                        <th scope="col">Comment ID</th>
+                                        <th scope="col">Username</th>
+                                        <th scope="col">Text</th>
+                                        <th scope="col">Sentiment</th>
+                                        <th scope="col">Interest</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for c in comments %}
+                                    <tr>
+                                        <td>{{ c.post.media_id }}</td>
+                                        <td>{{ c.comment_id }}</td>
+                                        <td>{{ c.username }}</td>
+                                        <td class="text-truncate" style="max-width: 250px;" title="{{ c.text }}">
+                                            {{c.text }}</td>
+                                        <td>
+                                            {{ c.sentiment }}
+                                            {% if c.sentiment_score %}
+                                            ({{ c.sentiment_score|floatformat:2 }})
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if c.interest_score %}
+                                            {{ c.interest_score|floatformat:2 }}
+                                            {% else %}
+                                            -
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if c.status == "needs_reply" %}
+                                            <span class="badge bg-danger">Needs reply</span>
+                                            {% elif c.status == "review" %}
+                                            <span class="badge bg-warning text-dark">Review</span>
+                                            {% elif c.status == "replied" %}
+                                            <span class="badge bg-success">Replied</span>
+                                            {% elif c.status == "auto_replied" %}
+                                            <span class="badge bg-primary">Auto replied</span>
+                                            {% elif c.status == "not_interested" %}
+                                            <span class="badge bg-secondary">Not interested</span>
+                                            {% else %}
+                                            <span class="badge bg-light text-dark">New</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="7" class="text-center text-muted py-4">
+                                            No comments available
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Fin de Comments Analysis -->
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
