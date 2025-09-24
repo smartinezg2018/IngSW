@@ -1,4 +1,8 @@
 django
+langid
+pysentimiento 
+transformers 
+torch 
 pandas  
 python-dotenv
 pillow

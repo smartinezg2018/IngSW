@@ -19,6 +19,7 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
+GOOGLE_API = os.getenv("GOOGLE_API")
 IG_USER_ID = os.getenv("IG_USER_ID")
 USERNAME = os.getenv("USERNAME")
 APP_ID = os.getenv("APP_ID")
@@ -43,6 +44,9 @@ SECRET_KEY = 'django-insecure-hvd1s98s5&fu@crbw14c!x)$0g@*-54!kri$60@fu^#+oh5#qv
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+#Threshold Comentar
+COMMENT_INTEREST_THRESHOLD = float(os.getenv("COMMENT_INTEREST_THRESHOLD", "0.8"))
 
 
 # Application definition

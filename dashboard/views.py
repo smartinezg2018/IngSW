@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.conf import settings
+from django.core.management import call_command
 from dotenv import load_dotenv
 from pathlib import Path
 import json
@@ -10,7 +11,6 @@ import json
 from dashboard.models import Post, Comment
 from .models import Post
 from django.db.models import Count
-
 
 import time
 import http.server
@@ -89,6 +89,7 @@ def post_instagram(post : Post):
                 post.save()
                 break
     
+    
 
     
 
@@ -126,28 +127,29 @@ def comments(request):
 
     url = f"https://graph.facebook.com/v21.0/{settings.IG_USER_ID}/media"
     payload = {
-    "fields": fields,
-    "access_token" : settings.LONG_ACCESS_TOKEN
+        "fields": fields,
+        "access_token": settings.LONG_ACCESS_TOKEN
     }
 
     response = requests.get(url, params=payload)
     data = response.json()
-    print(json.dumps(data, indent=2, sort_keys=True))
-    
-    for post_data in data['data']:
-        media_id = post_data['id']
+    print(data)
+
+    # Guardar/actualizar comentarios en la BD
+    for post_data in data.get("data", []):
+        media_id = post_data["id"]
 
         try:
-            post = Post.objects.get(media_id=media_id)  # get Post by media_id
+            post = Post.objects.get(media_id=media_id)  # busca el Post por media_id
         except Post.DoesNotExist:
             print(f"Post {media_id} not found, skipping.")
             continue
 
-        # Only if there are comments
-        if post_data.get('comments') and 'data' in post_data['comments']:
-            for c in post_data['comments']['data']:
+        # Solo si hay comentarios
+        if post_data.get("comments") and "data" in post_data["comments"]:
+            for c in post_data["comments"]["data"]:
                 Comment.objects.update_or_create(
-                    comment_id=c['id'],   # unique identifier
+                    comment_id=c["id"],  # unique identifier
                     defaults={
                         "post": post,
                         "text": c.get("text", ""),
@@ -155,8 +157,24 @@ def comments(request):
                         "username": c.get("username"),
                     }
                 )
-                print(c.get("user", {}).get("id"))
+
+    # Query de posts con número de comentarios
+    posts = Post.objects.annotate(comment_count=Count("comments")).order_by("-comment_count")
+
+    # Query de comentarios para la tabla de análisis
+    comments = Comment.objects.select_related("post").order_by("-last_scored_at")
+
+    # me gustaria que se clasificaran los comentarios aquí
     
+    call_command("tag_comments")
     
-    posts = Post.objects.annotate(comment_count=Count('comments')).order_by('-comment_count') 
-    return render(request,"comments.html",{"posts": posts})
+    # Pasamos ambos al template
+    return render(
+        request,
+        "comments.html",
+        {
+            "posts": posts,
+            "comments": comments,  # 👈 ahora el template puede usarlos
+        },
+    )
+
