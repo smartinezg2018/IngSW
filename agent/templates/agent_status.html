@@ -1,0 +1,89 @@
+{% comment %} {% extends "base.html" %} {% endcomment %}
+{% comment %} {% block content %} {% endcomment %}
+<h1>Estado del Agente</h1>
+
+<div style="margin: 20px 0; padding: 20px; border: 2px solid {% if agent.is_active %}#28a745{% else %}#dc3545{% endif %}; border-radius: 8px; background-color: {% if agent.is_active %}#d4edda{% else %}#f8d7da{% endif %};">
+  <h2>{{ agent.name }}</h2>
+  <p><strong>Estado:</strong> 
+    <span style="color: {% if agent.is_active %}#28a745{% else %}#dc3545{% endif %}; font-weight: bold;">
+      {% if agent.is_active %}🟢 ACTIVO{% else %}🔴 INACTIVO{% endif %}
+    </span>
+  </p>
+  
+  {% comment %} {% if agent.description %} {% endcomment %}
+    <p><strong>Descripción:</strong> {{ agent.description }}</p>
+  {% comment %} {% endif %} {% endcomment %}
+  
+  <p><strong>Última actualización:</strong> {{ agent.updated_at|date:"d/m/Y H:i" }}</p>
+  
+  <div style="margin-top: 15px;">
+    <button id="toggleBtn" onclick="toggleAgent()" style="
+      padding: 10px 20px; 
+      font-size: 16px; 
+      border: none; 
+      border-radius: 5px; 
+      cursor: pointer;
+      background-color: {% if agent.is_active %}#dc3545{% else %}#28a745{% endif %};
+      color: white;
+    ">
+      {% if agent.is_active %}Desactivar Agente{% else %}Activar Agente{% endif %}
+    </button>
+  </div>
+</div>
+
+<div id="message" style="margin-top: 15px; padding: 10px; border-radius: 5px; display: none;"></div>
+
+<script>
+async function toggleAgent() {
+  const btn = document.getElementById('toggleBtn');
+  const message = document.getElementById('message');
+  
+  btn.disabled = true;
+  btn.textContent = 'Procesando...';
+  
+  try {
+    const response = await fetch('{% url "agent_toggle" %}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+    
+    const data = await response.json();
+    
+    if (data.status === 'success') {
+      message.style.display = 'block';
+      message.style.backgroundColor = '#d4edda';
+      message.style.color = '#155724';
+      message.style.border = '1px solid #c3e6cb';
+      message.textContent = data.message;
+      
+      // Reload page after short delay to show updated status
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    } else {
+      throw new Error(data.message);
+    }
+  } catch (error) {
+    message.style.display = 'block';
+    message.style.backgroundColor = '#f8d7da';
+    message.style.color = '#721c24';
+    message.style.border = '1px solid #f5c6cb';
+    message.textContent = 'Error: ' + error.message;
+    
+    btn.disabled = false;
+    btn.textContent = '{% if agent.is_active %}Desactivar Agente{% else %}Activar Agente{% endif %}';
+  }
+}
+</script>
+
+<h3>Funcionalidades del Agente</h3>
+<ul>
+  <li>Publicación automática en Instagram</li>
+  <li>Gestión de comentarios</li>
+  <li>Procesamiento de ofertas de trabajo</li>
+  <li>Análisis y respuestas automáticas</li>
+</ul>
+
+{% comment %} {% endblock %} {% endcomment %}

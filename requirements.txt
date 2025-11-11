@@ -1,5 +1,4 @@
 django
-tweepy
 langid
 pysentimiento 
 transformers 

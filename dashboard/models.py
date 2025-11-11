@@ -29,7 +29,7 @@ class Comment(models.Model):
         related_name="comments",
     )
     text = models.TextField(blank=True, default="")
-    user_id = models.CharField(max_length=100, blank=True, default="")
+    user_id = models.CharField(max_length=100, blank=True, default="", null= True)
     username = models.CharField(max_length=150, blank=True, default="")
 
     # --- nuevos campos NLP ---

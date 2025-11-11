@@ -19,6 +19,7 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
+GOOGLE_API = os.getenv("GOOGLE_API")
 IG_USER_ID = os.getenv("IG_USER_ID")
 USERNAME = os.getenv("USERNAME")
 APP_ID = os.getenv("APP_ID")
