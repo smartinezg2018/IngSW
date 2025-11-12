@@ -22,72 +22,102 @@ import time
 import json
 import requests
 
-def post_instagram(post : Post):
+def post_instagram(post: Post):
+    """Post image to Instagram using Facebook Graph API."""
     
+    # Setup ngrok tunnel
     PORT = 8080
     Handler = http.server.SimpleHTTPRequestHandler
     httpd = socketserver.TCPServer(("", PORT), Handler)
-    thread = threading.Thread(target=httpd.serve_forever)
-    thread.start()
-    ngrok = subprocess.Popen(["ngrok", "http", str(PORT)], stdout=subprocess.PIPE)
-    time.sleep(2)
-    resp = requests.get("http://localhost:4040/api/tunnels")
-    public_url = resp.json()["tunnels"][0]["public_url"]
-
-    image_url = public_url + f"/{post.image.url}"
     
-    print(image_url)
-    caption = post.caption
-
-    # creation of the container
-    url = f"https://graph.facebook.com/v17.0/{settings.IG_USER_ID}/media"
-    
-    payload = {
-        "image_url" : image_url,
-        "caption" : caption,
-        "access_token" : settings.LONG_ACCESS_TOKEN,
-    }
-    
-    response = requests.post(url, params=payload)
-    data = response.json()
-    creation_id = data["id"]
-
-    # publishing the image
-    url = f"https://graph.facebook.com/v17.0/{settings.IG_USER_ID}/media_publish"
-    payload = {
-        "creation_id" : creation_id,
-        "access_token" : settings.LONG_ACCESS_TOKEN
-    }
-
-    response = requests.post(url, params=payload)
-    time.sleep(2)
-    
-    
-    
-    # getting the id of the last post
-    url = f"https://graph.facebook.com/v17.0/{settings.IG_USER_ID}/media"
-    params = {
-        "fields": "id,caption,media_url,timestamp",
-        "access_token": settings.LONG_ACCESS_TOKEN,
-    }
-    resp = requests.get(url, params=params)
-    
-    ngrok.terminate()
-    httpd.shutdown()
-    
-    
-    data = resp.json()
-    print('data: ',data)
-
-    if "data" in data:
-        # Try to match by caption or image URL
-        for item in data["data"]:
-            if item.get("caption") == post.caption:
-                published_id = item["id"]
-                print("Recovered media_id:", published_id)
-                post.media_id = published_id
-                post.save()
-                break
+    try:
+        # Start local server
+        thread = threading.Thread(target=httpd.serve_forever, daemon=True)
+        thread.start()
+        
+        # Start ngrok
+        ngrok = subprocess.Popen(
+            ["ngrok", "http", str(PORT)],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+        )
+        
+        # Wait for ngrok to be ready (with retries)
+        public_url = None
+        for attempt in range(10):
+            time.sleep(1)
+            try:
+                resp = requests.get("http://localhost:4040/api/tunnels", timeout=2)
+                tunnels = resp.json().get("tunnels", [])
+                if tunnels:
+                    public_url = tunnels[0]["public_url"]
+                    break
+            except (requests.RequestException, KeyError, IndexError):
+                continue
+        
+        if not public_url:
+            raise Exception("Failed to establish ngrok tunnel")
+        
+        image_url = f"{public_url}/{post.image.url}"
+        print(f"Image URL: {image_url}")
+        
+        # Step 1: Create media container
+        create_url = f"https://graph.facebook.com/v21.0/{settings.IG_USER_ID}/media"
+        create_payload = {
+            "image_url": image_url,
+            "caption": post.caption,
+            "access_token": settings.LONG_ACCESS_TOKEN,
+        }
+        
+        create_response = requests.post(create_url, params=create_payload, timeout=30)
+        create_response.raise_for_status()
+        create_data = create_response.json()
+        
+        if "id" not in create_data:
+            raise Exception(f"Container creation failed: {create_data}")
+        
+        creation_id = create_data["id"]
+        print(f"Container created: {creation_id}")
+        
+        # Step 2: Publish media
+        publish_url = f"https://graph.facebook.com/v21.0/{settings.IG_USER_ID}/media_publish"
+        publish_payload = {
+            "creation_id": creation_id,
+            "access_token": settings.LONG_ACCESS_TOKEN
+        }
+        
+        publish_response = requests.post(publish_url, params=publish_payload, timeout=30)
+        publish_response.raise_for_status()
+        publish_data = publish_response.json()
+        
+        if "id" not in publish_data:
+            raise Exception(f"Publishing failed: {publish_data}")
+        
+        published_id = publish_data["id"]
+        print(f"Published successfully: {published_id}")
+        
+        # Save media ID immediately
+        post.media_id = published_id
+        post.save()
+        
+    except requests.RequestException as e:
+        print(f"API request failed: {e}")
+        raise
+    except Exception as e:
+        print(f"Error posting to Instagram: {e}")
+        raise
+    finally:
+        # Cleanup resources
+        try:
+            ngrok.terminate()
+            ngrok.wait(timeout=5)
+        except:
+            pass
+        
+        try:
+            httpd.shutdown()
+        except:
+            pass
     
     
 
