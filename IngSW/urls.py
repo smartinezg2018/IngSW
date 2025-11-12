@@ -22,7 +22,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('dashboard/',include('dashboard.urls')),
-    path('agent/',include('agent.urls'))
+    path('agent/',include('agent.urls')),
+    path("dashboard/", include(("dashboard.urls", "dashboard"), namespace="dashboard")),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

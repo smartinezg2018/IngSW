@@ -4,6 +4,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.conf import settings
 from django.core.management import call_command
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.shortcuts import render
 from dotenv import load_dotenv
 from pathlib import Path
 import json
@@ -128,7 +131,7 @@ def comments(request):
     url = f"https://graph.facebook.com/v21.0/{settings.IG_USER_ID}/media"
     payload = {
         "fields": fields,
-        "access_token": settings.LONG_ACCESS_TOKEN
+        "access_token": settings.LONG_ACCESS_TOKEN,
     }
 
     response = requests.get(url, params=payload)
@@ -155,26 +158,84 @@ def comments(request):
                         "text": c.get("text", ""),
                         "user_id": c.get("user", {}).get("id"),
                         "username": c.get("username"),
-                    }
+                    },
                 )
 
-    # Query de posts con número de comentarios
-    posts = Post.objects.annotate(comment_count=Count("comments")).order_by("-comment_count")
-
-    # Query de comentarios para la tabla de análisis
-    comments = Comment.objects.select_related("post").order_by("-last_scored_at")
-
-    # me gustaria que se clasificaran los comentarios aquí
-    
+    # Ejecuta clasificación/etiquetado (igual que antes, solo aseguramos que ocurra antes de consultar)
     call_command("tag_comments")
-    
-    # Pasamos ambos al template
+
+    # ---------------------- POSTS: search + sort + pagination ----------------------
+    q = request.GET.get("q", "").strip()
+    sort = request.GET.get("sort", "newest")
+
+    posts_qs = Post.objects.annotate(comment_count=Count("comments"))
+
+    if q:
+        posts_qs = posts_qs.filter(
+            Q(media_id__icontains=q)
+            | Q(description__icontains=q)
+            | Q(caption__icontains=q)
+        )
+
+    sort_map = {
+        "newest": "-date",
+        "oldest": "date",
+        "most_comments": "-comment_count",
+        "least_comments": "comment_count",
+    }
+    posts_qs = posts_qs.order_by(sort_map.get(sort, "-date"))
+
+    paginator = Paginator(posts_qs, 10)  # 10 per page
+    posts_page = paginator.get_page(request.GET.get("page"))
+
+    # ---------------------- COMMENTS: search + sort + pagination -------------------
+    c_q = request.GET.get("c_q", "").strip()             # search by comment id, post id, text
+    c_sort = request.GET.get("c_sort", "recent")         # recent/status/post/username/sentiment
+
+    comments_qs = Comment.objects.select_related("post")
+
+    if c_q:
+        comments_qs = comments_qs.filter(
+            Q(comment_id__icontains=c_q)
+            | Q(post__media_id__icontains=c_q)
+            | Q(text__icontains=c_q)
+        )
+
+    # Extra filter by status value (optional dropdown in template)
+    c_status = request.GET.get("c_status", "").strip().lower()
+
+    # Filter comments by a specific status if provided
+    if c_status:
+        comments_qs = comments_qs.filter(status__iexact=c_status)
+
+    # Sort order
+    c_sort_map = {
+        "recent": "-last_scored_at",
+        "status": "status",
+        "post": "post__media_id",
+        "username": "username",
+        "sentiment": "sentiment",
+    }
+    comments_qs = comments_qs.order_by(c_sort_map.get(c_sort, "-last_scored_at"))
+
+
+    comments_paginator = Paginator(comments_qs, 15)
+    comments_page = comments_paginator.get_page(request.GET.get("c_page"))
+
+    # ---------------------- Render ----------------------
     return render(
         request,
         "comments.html",
         {
-            "posts": posts,
-            "comments": comments,  # 👈 ahora el template puede usarlos
+            "posts": posts_page.object_list,
+            "posts_page": posts_page,
+            "comments": comments_page.object_list,
+            "comments_page": comments_page,
+            "q": q,
+            "sort": sort,
+            "c_q": c_q,
+            "c_sort": c_sort,
+            "c_status": c_status,
+
         },
     )
-
