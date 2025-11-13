@@ -49,7 +49,7 @@ class Command(BaseCommand):
             qs = qs.filter(post__media_id=opts["post"])
 
         count = 0
-        threshold = getattr(settings, "COMMENT_INTEREST_THRESHOLD", 0.1)
+        threshold = getattr(settings, "COMMENT_INTEREST_THRESHOLD", 0.02)
 
         self.stdout.write(self.style.NOTICE(f"Procesando {qs.count()} comentarios... umbral={threshold}"))
         for c in qs.iterator():

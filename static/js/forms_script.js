@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.append("caption", document.getElementById("cedula").value);
             formData.append("image", document.getElementById("customerImage").files[0]);
 
-            await fetch("/dashboard/save_forms/", {
+            await fetch("/save_forms/", {
             method: "POST",
             body: formData, // no Content-Type header, browser sets it automatically
         });

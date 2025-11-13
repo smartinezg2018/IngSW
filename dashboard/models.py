@@ -3,19 +3,17 @@ from django.utils import timezone
 # Create your models here.
 
 
+
+class Field(models.Model):
+    field = models.CharField(max_length=100,blank=True, null=True,unique=True)
     
 class Post(models.Model):
-    """
-    Represents an X post (tweet) that we're tracking
-    """
-    
     caption = models.TextField(blank=True, null=True)
     date = models.DateTimeField(default=timezone.now, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     image = models.ImageField(upload_to="uploads/", blank=True, null=True)
     media_id = models.CharField(max_length=100,blank=True, null=True,unique=True)
-    
-
+    work_field = models.ForeignKey(Field,on_delete=models.SET_NULL,blank=True,null =True) 
     
 
 class Comment(models.Model):

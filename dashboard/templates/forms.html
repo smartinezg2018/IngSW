@@ -116,7 +116,7 @@
                                 <span class="badge text-bg-light">Create</span>
                             </div>
 
-                            <form id="customerForm" method="post" enctype="multipart/form-data">
+                            <form id="customerForm" method="post" enctype="multipart/form-data" action="{% url 'dashboard:save_forms' %}">
                                 {% csrf_token %}
 
                                 <div class="mb-3">
@@ -141,13 +141,11 @@
                                     <div class="form-text hint">Upload a JPG image.</div>
                                 </div>
 
-                                <div class="d-flex justify-content-end gap-2">
-                                    <a href="{% url 'dashboard:comments' %}"
-                                        class="btn btn-outline-secondary btn-cta">Cancel</a>
-                                    <button type="submit" class="btn btn-dark btn-cta">
-                                        <i class="bi bi-save me-2"></i>Save Customer
-                                    </button>
-                                </div>
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button type="submit" class="btn btn-dark btn-lg px-4" id="checkout">
+                                    <i class="fas fa-save me-2"></i>Post
+                                </button>
+                            </div>
                             </form>
                         </div>
                         <p class="text-center text-muted small mt-3">Need help? <a href="#"

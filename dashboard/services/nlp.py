@@ -2,7 +2,6 @@
 import re
 import math
 from functools import lru_cache
-
 import langid
 from pysentimiento import create_analyzer
 

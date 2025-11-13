@@ -1,6 +1,8 @@
 # import requests
 from django.conf import settings
 import requests
+from django.core.management.base import BaseCommand
+from dashboard.models import Post, Comment
 
 long_access_token = settings.LONG_ACCESS_TOKEN
 api_key = settings.GOOGLE_API
@@ -57,8 +59,6 @@ def generate_hr_response(post_description, comment_text):
 
 
 
-from django.core.management.base import BaseCommand
-from dashboard.models import Post, Comment
 
 class Command(BaseCommand):
     help = 'Process comments that need reply'
