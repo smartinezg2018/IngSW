@@ -1,113 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard • Posts & Comments</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"
-        rel="stylesheet" />
-    <style>
-        :root {
-            --bg: #f7f8fc;
-            --card: #fff;
-            --ring: #e5e7eb;
-            --accent: #6c5ce7;
-            --accent-soft: #f1f0ff;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard • Posts & Comments</title>
 
-        body {
-            background: radial-gradient(1200px 600px at 20% 0%, #f1f5ff 0%, var(--bg) 45%, var(--bg) 100%);
-        }
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
 
-        .brand {
-            font-weight: 800;
-            letter-spacing: .3px;
-        }
+  <style>
+    :root {
+      --bg: #f7f8fc;
+      --card: #fff;
+      --ring: #e5e7eb;
+      --accent: #6c5ce7;
+      --accent-soft: #f1f0ff;
+    }
 
-        /* Sidebar */
-        .sidebar {
-            width: 230px;
-            min-height: 100vh;
-            background: #fff;
-            border-right: 1px solid var(--ring);
-            position: sticky;
-            top: 0;
-        }
+    body {
+      background: radial-gradient(1200px 600px at 20% 0%, #f1f5ff 0%, var(--bg) 45%, var(--bg) 100%);
+      margin: 0; /* Remove any default margin */
+    }
 
-        .sidebar .nav-link {
-            border-radius: 12px;
-            color: #475569;
-            font-weight: 600;
-            transition: .15s background-color, .15s transform;
-        }
+    .brand {
+      font-weight: 800;
+      letter-spacing: .3px;
+    }
 
-        .sidebar .nav-link:hover {
-            background: #f4f6ff;
-            transform: translateX(2px);
-        }
+    /* Sidebar */
+    .sidebar {
+      width: 230px;
+      min-height: 100vh;
+      background: #fff;
+      border-right: 1px solid var(--ring);
+      position: sticky;
+      top: 0;
+    }
 
-        .sidebar .nav-link.active {
-            background: #eef2ff;
-            color: #4338ca;
-        }
+    .sidebar .nav-link {
+      border-radius: 12px;
+      color: #475569;
+      font-weight: 600;
+      transition: .15s background-color, .15s transform;
+    }
 
-        /* Cards & table */
-        .card-soft {
-            background: var(--card);
-            border: 1px solid var(--ring);
-            border-radius: 18px;
-            box-shadow: 0 10px 25px rgba(16, 24, 40, .04);
-        }
+    .sidebar .nav-link:hover {
+      background: #f4f6ff;
+      transform: translateX(2px);
+    }
 
-        .metric {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            padding: 18px;
-            border-radius: 16px;
-            background: var(--card);
-            border: 1px solid var(--ring);
-        }
+    .sidebar .nav-link.active {
+      background: #eef2ff;
+      color: #4338ca;
+    }
 
-        .metric .icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            display: grid;
-            place-items: center;
-            background: var(--accent-soft);
-            color: #5b5bd6;
-        }
+    /* Cards & table */
+    .card-soft {
+      background: var(--card);
+      border: 1px solid var(--ring);
+      border-radius: 18px;
+      box-shadow: 0 10px 25px rgba(16, 24, 40, .04);
+    }
 
-        .table thead th {
-            background: #f8fafc !important;
-            font-weight: 700;
-            border-bottom: 1px solid var(--ring) !important;
-        }
+    .metric {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 18px;
+      border-radius: 16px;
+      background: var(--card);
+      border: 1px solid var(--ring);
+    }
 
-        .table td {
-            vertical-align: middle;
-        }
-    </style>
+    .metric .icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: var(--accent-soft);
+      color: #5b5bd6;
+    }
+
+    .table thead th {
+      background: #f8fafc !important;
+      font-weight: 700;
+      border-bottom: 1px solid var(--ring) !important;
+    }
+
+    .table td {
+      vertical-align: middle;
+    }
+  </style>
 </head>
 
-<body>
+<body class="bg-light">
 
-<body class="bg-light py-5">
 
-    <div class="d-flex justify-content-center gap-3">
-    <button class="btn btn-primary" onclick="runCommand('{% url 'dashboard:update_comments' %}')">
-        Update Comments
-    </button>
-    <button class="btn btn-primary" onclick="runCommand('{% url 'dashboard:tag_comments' %}')">
-        Tag Comments
-    </button>
-    <button class="btn btn-primary" onclick="runCommand('{% url 'dashboard:llm' %}')">
-        Run LLM
-    </button>
-    </div>
+
 
     <div class="d-flex">
         <!-- Sidebar (lg and up) -->
@@ -130,10 +120,38 @@
 
         <!-- Main -->
         <main class="flex-grow-1">
+            <main class="flex-grow-1">
+  <div class="container-fluid py-4">
+
+    <!-- ✅ Quick Actions Block -->
+    <section class="card-soft mx-auto mb-5 p-4 text-center" style="max-width: 700px;">
+      <h5 class="fw-bold mb-3">Quick Actions</h5>
+      <p class="text-muted mb-4">Manage comments and run analysis with one click</p>
+
+      <div class="d-flex justify-content-center flex-wrap gap-3">
+        <button class="btn btn-outline-primary btn-lg shadow-sm d-flex align-items-center gap-2 px-4"
+                onclick="runCommand('{% url 'dashboard:update_comments' %}')">
+          <i class="bi bi-arrow-clockwise"></i>
+          <span>Update Comments</span>
+        </button>
+
+        <button class="btn btn-outline-success btn-lg shadow-sm d-flex align-items-center gap-2 px-4"
+                onclick="runCommand('{% url 'dashboard:tag_comments' %}')">
+          <i class="bi bi-tags-fill"></i>
+          <span>Tag Comments</span>
+        </button>
+
+        <button class="btn btn-outline-warning btn-lg shadow-sm d-flex align-items-center gap-2 px-4"
+                onclick="runCommand('{% url 'dashboard:llm' %}')">
+          <i class="bi bi-cpu"></i>
+          <span>Run LLM</span>
+        </button>
+      </div>
+    </section>
             <div class="container-fluid py-4">
                 <!-- Top bar with mobile menu -->
                 <div class="d-flex align-items-center justify-content-between mb-4">
-                    <h4 class="fw-bold mb-0">Empresas Muy Buenas Colombia</h4>
+                    <h4 class="fw-bold mb-0">Empleos Muy Buenas Colombia</h4>
                     <button class="btn btn-outline-secondary d-lg-none" data-bs-toggle="offcanvas"
                         data-bs-target="#mobileNav">
                         <i class="bi bi-list"></i>
@@ -418,32 +436,52 @@
 
 
 <script>
-   async function runCommand(url) {
+
+  async function runCommand(url) {
+    const button = event.target;
+    const originalText = button.textContent;
+    button.disabled = true;
+    button.textContent = "Running...";
+
+    try {
       const response = await fetch(url, {
         method: "POST",
         headers: {
           "X-CSRFToken": getCookie("csrftoken"),
         },
       });
+
       const data = await response.json();
       alert(data.message);
-    }
 
-    // Helper: get Django CSRF token from cookie
-    function getCookie(name) {
-      let cookieValue = null;
-      if (document.cookie && document.cookie !== "") {
-        const cookies = document.cookie.split(";");
-        for (let i = 0; i < cookies.length; i++) {
-          const cookie = cookies[i].trim();
-          if (cookie.substring(0, name.length + 1) === name + "=") {
-            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-            break;
-          }
+      //  Recargar la página después de ejecutar correctamente el comando
+      location.reload();
+
+    } catch (error) {
+      alert("Ocurrió un error al ejecutar el comando.");
+      console.error(error);
+    } finally {
+      // En caso de error, restaurar el botón
+      button.disabled = false;
+      button.textContent = originalText;
+    }
+  }
+
+  // Helper: obtener el token CSRF de Django
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      const cookies = document.cookie.split(";");
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
         }
       }
-      return cookieValue;
     }
+    return cookieValue;
+  }
 </script>
 
 </body>

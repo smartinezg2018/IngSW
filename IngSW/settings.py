@@ -46,7 +46,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 #Threshold Comentar
-COMMENT_INTEREST_THRESHOLD = float(os.getenv("COMMENT_INTEREST_THRESHOLD", "0.01"))
+COMMENT_INTEREST_THRESHOLD = float(os.getenv("COMMENT_INTEREST_THRESHOLD", "0.11"))
 
 
 # Application definition
@@ -59,7 +59,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'dashboard',
-    # 'agent'
+    'agent'
 ]
 
 MIDDLEWARE = [
