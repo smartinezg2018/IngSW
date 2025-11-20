@@ -7,3 +7,6 @@ pandas
 python-dotenv
 pillow
 ngrok
+google
+google-cloud-language
+google-api-python-client

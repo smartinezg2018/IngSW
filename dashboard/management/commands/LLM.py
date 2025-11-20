@@ -4,6 +4,7 @@ import requests
 from django.core.management.base import BaseCommand
 from dashboard.models import Post, Comment
 
+
 long_access_token = settings.LONG_ACCESS_TOKEN
 api_key = settings.GOOGLE_API
 
@@ -33,8 +34,8 @@ def generate_hr_response(post_description, comment_text):
                 - Máximo 2-3 oraciones
                 """
         # Replace with your actual API key
-        api_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key={api_key}"
-
+        api_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+        
 
         payload = {
             "contents": [{"parts": [{"text": prompt}]}]
