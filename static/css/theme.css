@@ -1,0 +1,133 @@
+:root {
+    /* ===== PRIMARY BRAND – GREENS ===== */
+    --brand-primary-50: #F1FBF4;
+    /* green-50  */
+    --brand-primary-100: #CEF1DC;
+    /* green-100 */
+    --brand-primary-200: #9EE4B8;
+    /* green-200 */
+    --brand-primary-300: #6DD695;
+    /* green-300 */
+    --brand-primary-400: #3DC971;
+    /* green-400 */
+    --brand-primary-500: #0CBB4E;
+    /* green-500 */
+    --brand-primary-600: #098C3B;
+    /* green-600 */
+
+    /* ===== TERTIARY B2B BLUES ===== */
+    --b2b-blue-50: #F0F9FF;
+    --b2b-blue-100: #E0F3FB;
+    --b2b-blue-200: #A3DAF2;
+    --b2b-blue-300: #66C1EA;
+    --b2b-blue-400: #00A7E1;
+    --b2b-blue-500: #007DA9;
+
+    /* ===== NEUTRALS ===== */
+    --neutral-50: #FFFFFF;
+    /* grey-50  */
+    --neutral-100: #F0F1F3;
+    /* grey-100 */
+    --neutral-200: #E0E4E7;
+    /* grey-200 */
+    --neutral-300: #C2C8CF;
+    /* grey-300 */
+    --neutral-400: #A3ADB8;
+    /* grey-400 */
+    --neutral-500: #8591A0;
+    /* grey-500 */
+    --neutral-600: #667688;
+    /* grey-600 */
+    --neutral-700: #47535F;
+    /* grey-700 */
+    --neutral-800: #292F37;
+    /* grey-800 */
+    --neutral-900: #0A0C0E;
+    /* grey-900 */
+
+    /* ===== FEEDBACK / SEMANTIC ===== */
+    /* Success */
+    --feedback-success-bg: #F1FBF4;
+    /* green-50  */
+    --feedback-success: #0CBB4E;
+    /* green-500 */
+
+    /* Info */
+    --feedback-info-bg: #F0F9FF;
+    /* light-blue-50 */
+    --feedback-info: #00A7E1;
+    /* light-blue-400 */
+
+    /* Warning */
+    --feedback-warning-bg: #FFFAEF;
+    /* yellow-50  */
+    --feedback-warning: #FAAD14;
+    /* yellow-300 */
+
+    /* Error */
+    --feedback-error-bg: #FFFFF5;
+    /* red-50   */
+    --feedback-error: #E10000;
+    /* red-200 */
+
+    /* ===== Bootstrap overrides ===== */
+    --bs-font-sans-serif: "Lato", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+    --bs-body-bg: var(--neutral-50);
+    --bs-body-color: var(--neutral-700);
+
+    --bs-primary: var(--brand-primary-500);
+    --bs-primary-rgb: 12, 187, 78;
+
+    --bs-success: var(--feedback-success);
+    --bs-info: var(--feedback-info);
+    --bs-warning: var(--feedback-warning);
+    --bs-danger: var(--feedback-error);
+
+    --bs-border-color: var(--neutral-100);
+}
+
+.badge-soft-success {
+    background-color: var(--feedback-success-bg);
+    color: var(--feedback-success);
+}
+
+.badge-soft-info {
+    background-color: var(--feedback-info-bg);
+    color: var(--feedback-info);
+}
+
+.badge-soft-warning {
+    background-color: var(--feedback-warning-bg);
+    color: var(--feedback-warning);
+}
+
+.badge-soft-danger {
+    background-color: var(--feedback-error-bg);
+    color: var(--feedback-error);
+}
+
+.btn-publish {
+    background-color: var(--brand-primary-400) !important;
+    /* green-400 */
+    border-color: var(--brand-primary-400) !important;
+    color: #fff !important;
+    border-radius: 10px;
+    font-weight: 700;
+    transition: all 0.2s ease-out;
+    /* smooth animation */
+}
+
+.btn-publish:hover {
+    background-color: var(--brand-primary-500) !important;
+    /* green-500 */
+    border-color: var(--brand-primary-500) !important;
+    transform: translateY(-2px);
+    /* subtle lift */
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}
+
+.btn-publish:active {
+    transform: translateY(0px);
+    box-shadow: none;
+}

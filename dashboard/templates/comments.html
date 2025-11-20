@@ -1,97 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard • Posts & Comments</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard • Posts & Comments</title>
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"
+        rel="stylesheet" />
 
-  <style>
-    :root {
-      --bg: #f7f8fc;
-      --card: #fff;
-      --ring: #e5e7eb;
-      --accent: #6c5ce7;
-      --accent-soft: #f1f0ff;
-    }
+    {% load static %}
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{% static 'css/theme.css' %}">
 
-    body {
-      background: radial-gradient(1200px 600px at 20% 0%, #f1f5ff 0%, var(--bg) 45%, var(--bg) 100%);
-      margin: 0; /* Remove any default margin */
-    }
 
-    .brand {
-      font-weight: 800;
-      letter-spacing: .3px;
-    }
+    <style>
+        :root {
+            --bg: var(--neutral-50);
+            --card: var(--neutral-50);
+            --ring: var(--neutral-100);
 
-    /* Sidebar */
-    .sidebar {
-      width: 230px;
-      min-height: 100vh;
-      background: #fff;
-      border-right: 1px solid var(--ring);
-      position: sticky;
-      top: 0;
-    }
+            /* use your primary green as accent */
+            --accent: var(--brand-primary-500);
+            --accent-soft: var(--brand-primary-50);
+        }
 
-    .sidebar .nav-link {
-      border-radius: 12px;
-      color: #475569;
-      font-weight: 600;
-      transition: .15s background-color, .15s transform;
-    }
 
-    .sidebar .nav-link:hover {
-      background: #f4f6ff;
-      transform: translateX(2px);
-    }
+        body {
+            background: radial-gradient(1200px 600px at 20% 0%, #f1f5ff 0%, var(--bg) 45%, var(--bg) 100%);
+            margin: 0;
+            /* Remove any default margin */
+        }
 
-    .sidebar .nav-link.active {
-      background: #eef2ff;
-      color: #4338ca;
-    }
+        .brand {
+            font-weight: 800;
+            letter-spacing: .3px;
+        }
 
-    /* Cards & table */
-    .card-soft {
-      background: var(--card);
-      border: 1px solid var(--ring);
-      border-radius: 18px;
-      box-shadow: 0 10px 25px rgba(16, 24, 40, .04);
-    }
+        /* Sidebar */
+        .sidebar {
+            width: 230px;
+            min-height: 100vh;
+            background: #fff;
+            border-right: 1px solid var(--ring);
+            position: sticky;
+            top: 0;
+        }
 
-    .metric {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      padding: 18px;
-      border-radius: 16px;
-      background: var(--card);
-      border: 1px solid var(--ring);
-    }
+        .sidebar .nav-link {
+            border-radius: 12px;
+            color: var(--neutral-700);
+            font-weight: 600;
+            transition: .15s background-color, .15s transform;
+        }
 
-    .metric .icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      display: grid;
-      place-items: center;
-      background: var(--accent-soft);
-      color: #5b5bd6;
-    }
+        .sidebar .nav-link:hover {
+            background: var(--brand-primary-50);
+            color: var(--brand-primary-600);
+            transform: translateX(2px);
+        }
 
-    .table thead th {
-      background: #f8fafc !important;
-      font-weight: 700;
-      border-bottom: 1px solid var(--ring) !important;
-    }
+        .sidebar .nav-link.active {
+            background: var(--brand-primary-500);
+            color: #fff;
+        }
 
-    .table td {
-      vertical-align: middle;
-    }
-  </style>
+
+        /* Cards & table */
+        .card-soft {
+            background: var(--card);
+            border: 1px solid var(--ring);
+            border-radius: 18px;
+            box-shadow: 0 10px 25px rgba(16, 24, 40, .04);
+        }
+
+        .metric {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            padding: 18px;
+            border-radius: 16px;
+            background: var(--card);
+            border: 1px solid var(--ring);
+        }
+
+        .metric .icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            background: var(--accent-soft);
+            color: var(--brand-primary-600);
+        }
+
+
+        .table thead th {
+            background: #f8fafc !important;
+            font-weight: 700;
+            border-bottom: 1px solid var(--ring) !important;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
+
+        .quick-actions .btn {
+            border-radius: 999px;
+            font-weight: 700;
+        }
+
+        /* Update Comments – primary green */
+        .quick-actions .btn-outline-primary {
+            border-color: var(--brand-primary-500);
+            color: var(--brand-primary-600);
+            background-color: var(--brand-primary-50);
+        }
+
+        .quick-actions .btn-outline-primary:hover {
+            background-color: var(--brand-primary-100);
+        }
+
+        /* Tag Comments – stronger green */
+        .quick-actions .btn-outline-success {
+            border-color: var(--brand-primary-600);
+            color: #fff;
+            background-color: var(--brand-primary-500);
+        }
+
+        .quick-actions .btn-outline-success:hover {
+            background-color: var(--brand-primary-600);
+        }
+
+        /* Run LLM – info blue to differentiate */
+        .quick-actions .btn-outline-warning {
+            border-color: var(--feedback-info);
+            color: var(--feedback-info);
+            background-color: var(--feedback-info-bg);
+        }
+
+        .quick-actions .btn-outline-warning:hover {
+            background-color: var(--b2b-blue-100);
+        }
+    </style>
 </head>
 
 <body class="bg-light">
@@ -103,9 +156,10 @@
         <!-- Sidebar (lg and up) -->
         <aside class="sidebar p-3 d-none d-lg-block">
             <div class="d-flex align-items-center gap-2 mb-4 ps-1">
-                <i class="bi bi-hexagon-fill text-primary"></i>
-                <span class="brand">Dashboard<span class="text-muted">.v01</span></span>
+                <img src="{% static 'img/logo.png' %}" alt="Dashboard logo" style="height: 65px;">
+                <span class="brand">Dashboard<span class="text-muted"></span></span>
             </div>
+
             <nav class="nav flex-column gap-1">
                 <a class="nav-link px-3 {% if request.resolver_match.url_name == 'comments' %}active{% endif %}"
                     href="{% url 'dashboard:comments' %}">
@@ -121,295 +175,331 @@
         <!-- Main -->
         <main class="flex-grow-1">
             <main class="flex-grow-1">
-  <div class="container-fluid py-4">
+                <div class="container-fluid py-4">
 
-    <!-- ✅ Quick Actions Block -->
-    <section class="card-soft mx-auto mb-5 p-4 text-center" style="max-width: 700px;">
-      <h5 class="fw-bold mb-3">Quick Actions</h5>
-      <p class="text-muted mb-4">Manage comments and run analysis with one click</p>
+                    <!-- ✅ Quick Actions Block -->
+                    <section class="card-soft mx-auto mb-5 p-4 text-center quick-actions" style="max-width: 700px;">
 
-      <div class="d-flex justify-content-center flex-wrap gap-3">
-        <button class="btn btn-outline-primary btn-lg shadow-sm d-flex align-items-center gap-2 px-4"
-                onclick="runCommand('{% url 'dashboard:update_comments' %}')">
-          <i class="bi bi-arrow-clockwise"></i>
-          <span>Update Comments</span>
-        </button>
+                        <h5 class="fw-bold mb-3">Quick Actions</h5>
+                        <p class="text-muted mb-4">Manage comments and run analysis with one click</p>
 
-        <button class="btn btn-outline-success btn-lg shadow-sm d-flex align-items-center gap-2 px-4"
-                onclick="runCommand('{% url 'dashboard:tag_comments' %}')">
-          <i class="bi bi-tags-fill"></i>
-          <span>Tag Comments</span>
-        </button>
+                        <div class="d-flex justify-content-center flex-wrap gap-3">
+                            <button
+                                class="btn btn-outline-primary btn-lg shadow-sm d-flex align-items-center gap-2 px-4"
+                                onclick="runCommand('{% url 'dashboard:update_comments' %}')">
+                                <i class="bi bi-arrow-clockwise"></i>
+                                <span>Update Comments</span>
+                            </button>
 
-        <button class="btn btn-outline-warning btn-lg shadow-sm d-flex align-items-center gap-2 px-4"
-                onclick="runCommand('{% url 'dashboard:llm' %}')">
-          <i class="bi bi-cpu"></i>
-          <span>Run LLM</span>
-        </button>
-      </div>
-    </section>
-            <div class="container-fluid py-4">
-                <!-- Top bar with mobile menu -->
-                <div class="d-flex align-items-center justify-content-between mb-4">
-                    <h4 class="fw-bold mb-0">Empleos Muy Buenas Colombia</h4>
-                    <button class="btn btn-outline-secondary d-lg-none" data-bs-toggle="offcanvas"
-                        data-bs-target="#mobileNav">
-                        <i class="bi bi-list"></i>
-                    </button>
-                </div>
+                            <button
+                                class="btn btn-outline-success btn-lg shadow-sm d-flex align-items-center gap-2 px-4"
+                                onclick="runCommand('{% url 'dashboard:tag_comments' %}')">
+                                <i class="bi bi-tags-fill"></i>
+                                <span>Tag Comments</span>
+                            </button>
 
-                <!-- Metrics -->
-                <div class="row g-3 mb-4">
-                    <div class="col-12 col-md-4">
-                        <div class="metric">
-                            <div class="icon"><i class="bi bi-people"></i></div>
-                            <div>
-                                <div class="text-muted small">Total Posts</div>
-                                <div class="h5 mb-0">{{ posts|length }}</div>
-                                <div class="small text-success fw-semibold"><i class="bi bi-caret-up-fill"></i> this
-                                    month</div>
-                            </div>
+                            <button
+                                class="btn btn-outline-warning btn-lg shadow-sm d-flex align-items-center gap-2 px-4"
+                                onclick="runCommand('{% url 'dashboard:llm' %}')">
+                                <i class="bi bi-cpu"></i>
+                                <span>Run LLM</span>
+                            </button>
                         </div>
-                    </div>
-                    <div class="col-12 col-md-4">
-                        <div class="metric">
-                            <div class="icon"><i class="bi bi-chat-dots"></i></div>
-                            <div>
-                                <div class="text-muted small">Total Comments</div>
-                                <div class="h5 mb-0">{{ comments|length }}</div>
-                                <div class="small text-danger fw-semibold"><i class="bi bi-caret-down-fill"></i> this
-                                    month</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Posts -->
-                <section class="card-soft p-3 p-lg-4 mb-4">
-                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-                        <div>
-                            <h5 class="fw-bold mb-0">All Posts</h5>
-                            <a href="?">Active Items</a>
+                    </section>
+                    <div class="container-fluid py-4">
+                        <!-- Top bar with mobile menu -->
+                        <div class="d-flex align-items-center justify-content-between mb-4">
+                            <h4 class="fw-bold mb-0">Magneto Connect</h4>
+                            <button class="btn btn-outline-secondary d-lg-none" data-bs-toggle="offcanvas"
+                                data-bs-target="#mobileNav">
+                                <i class="bi bi-list"></i>
+                            </button>
                         </div>
 
-                        <form class="d-flex align-items-center gap-2" method="get">
-                            <div class="position-relative">
-                                <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
-                                <input class="form-control ps-5" type="search" name="q" value="{{ q|default:'' }}"
-                                    placeholder="Search posts" style="min-width:280px" />
+                        <!-- Metrics -->
+                        <div class="row g-3 mb-4">
+                            <div class="col-12 col-md-4">
+                                <div class="metric">
+                                    <div class="icon"><i class="bi bi-people"></i></div>
+                                    <div>
+                                        <div class="text-muted small">Total Posts</div>
+                                        <div class="h5 mb-0">{{ posts|length }}</div>
+                                        <div class="small text-success fw-semibold"><i class="bi bi-caret-up-fill"></i>
+                                            this
+                                            month</div>
+                                    </div>
+                                </div>
                             </div>
-                            <select class="form-select" name="sort" onchange="this.form.submit()">
-                                <option value="newest" {% if 'newest' in sort %}selected{% endif %}>Sort by: Newest
-                                </option>
-                                <option value="oldest" {% if 'oldest' in sort %}selected{% endif %}>Sort by: Oldest
-                                </option>
-                                <option value="most_comments" {% if 'most_comments' in sort %}selected{% endif %}>Most
-                                    comments</option>
-                                <option value="least_comments" {% if 'least_comments' in sort %}selected{% endif %}>
-                                    Least comments</option>
-                            </select>
-                        </form>
-                    </div>
+                            <div class="col-12 col-md-4">
+                                <div class="metric">
+                                    <div class="icon"><i class="bi bi-chat-dots"></i></div>
+                                    <div>
+                                        <div class="text-muted small">Total Comments</div>
+                                        <div class="h5 mb-0">{{ comments|length }}</div>
+                                        <div class="small text-danger fw-semibold"><i class="bi bi-caret-down-fill"></i>
+                                            this
+                                            month</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                    <div class="table-responsive">
-                        <table class="table align-middle">
-                            <thead>
-                                <tr>
-                                    <th>Media ID</th>
-                                    <th>Description</th>
-                                    <th>Publish date</th>
-                                    <th>Caption</th>
-                                    <th>Number of comments</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% if posts and posts|length > 0 %}
-                                {% for post in posts %}
-                                <tr>
-                                    <td><a class="text-primary text-decoration-none">{{ post.media_id }}</a></td>
+                        <!-- Posts -->
+                        <section class="card-soft p-3 p-lg-4 mb-4">
+                            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                                <div>
+                                    <h5 class="fw-bold mb-0">All Posts</h5>
+                                    <a href="?">Active Items</a>
+                                </div>
 
-                                    <td class="text-truncate" style="max-width:320px;" title="{{ post.description }}">
-                                        {{ post.description }}
-                                    </td>
-
-                                    <td><span class="badge text-bg-info px-3">{{ post.date }}</span></td>
-
-                                    <td class="text-truncate" style="max-width:300px;" title="{{ post.caption }}">
-                                        {{ post.caption }}
-                                    </td>
-
-                                    <td>{{ post.comment_count }}</td>
-                                </tr>
-                                {% endfor %}
-                                {% else %}
-                                <tr>
-                                    <td colspan="5" class="text-center text-muted py-5">No posts available</td>
-                                </tr>
-                                {% endif %}
-                            </tbody>
-
-                        </table>
-                    </div>
-                </section>
-
-                <!-- Comments Analysis -->
-                <section class="card-soft p-3 p-lg-4">
-                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-                        <h5 class="fw-bold mb-0">Comments Analysis</h5>
-
-                        <form class="d-flex align-items-center gap-2" method="get">
-                            <input type="hidden" name="q" value="{{ q|default:'' }}">
-                            <input type="hidden" name="sort" value="{{ sort|default:'newest' }}">
-                            <input type="hidden" name="page" value="{{ posts_page.number|default:'' }}">
-
-                            <div class="position-relative">
-                                <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
-                                <input class="form-control ps-5" type="search" name="c_q" value="{{ c_q|default:'' }}"
-                                    placeholder="Search comments (comment ID, post ID, or text)"
-                                    style="min-width:280px" />
+                                <form class="d-flex align-items-center gap-2" method="get">
+                                    <div class="position-relative">
+                                        <i
+                                            class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
+                                        <input class="form-control ps-5" type="search" name="q"
+                                            value="{{ q|default:'' }}" placeholder="Search posts"
+                                            style="min-width:280px" />
+                                    </div>
+                                    <select class="form-select" name="sort" onchange="this.form.submit()">
+                                        <option value="newest" {% if 'newest' in sort %}selected{% endif %}>Sort by:
+                                            Newest
+                                        </option>
+                                        <option value="oldest" {% if 'oldest' in sort %}selected{% endif %}>Sort by:
+                                            Oldest
+                                        </option>
+                                        <option value="most_comments" {% if 'most_comments' in sort %}selected{% endif
+                                            %}>Most
+                                            comments</option>
+                                        <option value="least_comments" {% if 'least_comments' in sort
+                                            %}selected{%endif%}>
+                                            Least comments</option>
+                                    </select>
+                                </form>
                             </div>
 
-                            <select class="form-select" name="c_sort" onchange="this.form.submit()">
-                                <option value="recent" {% if 'recent' in c_sort %}selected{% endif %}>Newest first
-                                </option>
-                                <option value="status" {% if 'status' in c_sort %}selected{% endif %}>Sort by: Status
-                                </option>
-                                <option value="post" {% if 'post' in c_sort %}selected{% endif %}>Sort by: Post</option>
-                                <option value="username" {% if 'username' in c_sort %}selected{% endif %}>Sort by:
-                                    Username</option>
-                                <option value="sentiment" {% if 'sentiment' in c_sort %}selected{% endif %}>Sort by:
-                                    Sentiment</option>
-                            </select>
+                            <div class="table-responsive">
+                                <table class="table align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Media ID</th>
+                                            <th>Description</th>
+                                            <th>Publish date</th>
+                                            <th>Caption</th>
+                                            <th>Number of comments</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% if posts and posts|length > 0 %}
+                                        {% for post in posts %}
+                                        <tr>
+                                            <td><a class="text-primary text-decoration-none">{{ post.media_id }}</a>
+                                            </td>
 
-                            <select class="form-select" name="c_status" onchange="this.form.submit()">
-                                <option value="">All statuses</option>
-                                <option value="needs_reply" {% if 'needs_reply' in c_status %}selected{% endif %}>Needs
-                                    reply</option>
-                                <option value="review" {% if 'review' in c_status %}selected{% endif %}>Review</option>
-                                <option value="replied" {% if 'replied' in c_status %}selected{% endif %}>Replied
-                                </option>
-                                <option value="not_interested" {% if 'not_interested' in c_status %}selected{% endif %}>
-                                    Not interested</option>
-                            </select>
+                                            <td class="text-truncate" style="max-width:320px;"
+                                                title="{{ post.description }}">
+                                                {{ post.description }}
+                                            </td>
 
-                            <a class="btn btn-outline-secondary" href="?q={{ q }}&sort={{ sort }}">Clear</a>
-                        </form>
-                    </div>
+                                            <td><span class="badge badge-soft-info px-3">{{ post.date }}</span></td>
 
-                    <div class="table-responsive">
-                        <table class="table align-middle">
-                            <thead>
-                                <tr>
-                                    <th>Post</th>
-                                    <th>Comment ID</th>
-                                    <th>Username</th>
-                                    <th>Text</th>
-                                    <th>Sentiment</th>
-                                    <th>Interest</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
 
-                            <tbody>
-                                {% for c in comments %}
-                                <tr>
-                                    <td>{{ c.post.media_id }}</td>
-                                    <td>{{ c.comment_id }}</td>
-                                    <td>{{ c.username }}</td>
+                                            <td class="text-truncate" style="max-width:300px;"
+                                                title="{{ post.caption }}">
+                                                {{ post.caption }}
+                                            </td>
 
-                                    <td class="text-truncate" style="max-width:420px;" title="{{ c.text }}">
-                                        {{ c.text }}
-                                    </td>
-
-                                    <td>
-                                        {{ c.sentiment }}
-                                        {% if c.sentiment_score %}
-                                        ({{ c.sentiment_score|floatformat:2 }})
-                                        {% endif %}
-                                    </td>
-
-                                    <td>
-                                        {% if c.interest_score %}
-                                        {{ c.interest_score|floatformat:2 }}
+                                            <td>{{ post.comment_count }}</td>
+                                        </tr>
+                                        {% endfor %}
                                         {% else %}
-                                        -
+                                        <tr>
+                                            <td colspan="5" class="text-center text-muted py-5">No posts available</td>
+                                        </tr>
                                         {% endif %}
-                                    </td>
+                                    </tbody>
 
-                                    <!-- STATUS (balanced if/elif/else + single endif) -->
-                                    <td>
-                                        {% with s=c.status|default_if_none:''|lower %}
-                                        {% if 'needs_reply' in s %}
-                                        <span class="badge text-bg-danger">Needs reply</span>
-                                        {% elif 'review' in s %}
-                                        <span class="badge text-bg-warning text-dark">Review</span>
-                                        {% elif 'replied' in s %}
-                                        <span class="badge text-bg-success">Replied</span>
-                                        {% elif 'auto_replied' in s %}
-                                        <span class="badge text-bg-primary">Auto replied</span>
-                                        {% elif 'not_interested' in s %}
-                                        <span class="badge text-bg-secondary">Not interested</span>
-                                        {% elif s %}
-                                        <span class="badge text-bg-light text-dark">{{ s }}</span>
+                                </table>
+                            </div>
+                        </section>
+
+                        <!-- Comments Analysis -->
+                        <section class="card-soft p-3 p-lg-4">
+                            <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+                                <h5 class="fw-bold mb-0">Comments Analysis</h5>
+
+                                <form class="d-flex align-items-center gap-2" method="get">
+                                    <input type="hidden" name="q" value="{{ q|default:'' }}">
+                                    <input type="hidden" name="sort" value="{{ sort|default:'newest' }}">
+                                    <input type="hidden" name="page" value="{{ posts_page.number|default:'' }}">
+
+                                    <div class="position-relative">
+                                        <i
+                                            class="bi bi-search position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
+                                        <input class="form-control ps-5" type="search" name="c_q"
+                                            value="{{ c_q|default:'' }}"
+                                            placeholder="Search comments (comment ID, post ID, or text)"
+                                            style="min-width:280px" />
+                                    </div>
+
+                                    <select class="form-select" name="c_sort" onchange="this.form.submit()">
+                                        <option value="recent" {% if 'recent' in c_sort %}selected{% endif %}>Newest
+                                            first
+                                        </option>
+                                        <option value="status" {% if 'status' in c_sort %}selected{% endif %}>Sort by:
+                                            Status
+                                        </option>
+                                        <option value="post" {% if 'post' in c_sort %}selected{% endif %}>Sort by: Post
+                                        </option>
+                                        <option value="username" {% if 'username' in c_sort %}selected{% endif %}>Sort
+                                            by:
+                                            Username</option>
+                                        <option value="sentiment" {% if 'sentiment' in c_sort %}selected{% endif %}>Sort
+                                            by:
+                                            Sentiment</option>
+                                    </select>
+
+                                    <select class="form-select" name="c_status" onchange="this.form.submit()">
+                                        <option value="">All statuses</option>
+
+                                        <option value="needs_reply" {% if 'needs_reply' in c_status %}selected{% endif
+                                            %}>
+                                            Needs reply
+                                        </option>
+
+                                        <option value="review" {% if 'review' in c_status %}selected{% endif %}>
+                                            Review
+                                        </option>
+
+                                        <option value="replied" {% if 'replied' in c_status %}selected{% endif %}>
+                                            Replied
+                                        </option>
+
+                                        <option value="not_interested" {% if 'not_interested' in c_status
+                                            %}selected{%endif %}>
+                                            Not interested
+                                        </option>
+                                    </select>
+
+
+                                    <a class="btn btn-outline-secondary" href="?q={{ q }}&sort={{ sort }}">Clear</a>
+                                </form>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table align-middle">
+                                    <thead>
+                                        <tr>
+                                            <th>Post</th>
+                                            <th>Comment ID</th>
+                                            <th>Username</th>
+                                            <th>Text</th>
+                                            <th>Sentiment</th>
+                                            <th>Interest</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {% for c in comments %}
+                                        <tr>
+                                            <td>{{ c.post.media_id }}</td>
+                                            <td>{{ c.comment_id }}</td>
+                                            <td>{{ c.username }}</td>
+
+                                            <td class="text-truncate" style="max-width:420px;" title="{{ c.text }}">
+                                                {{ c.text }}
+                                            </td>
+
+                                            <td>
+                                                {{ c.sentiment }}
+                                                {% if c.sentiment_score %}
+                                                ({{ c.sentiment_score|floatformat:2 }})
+                                                {% endif %}
+                                            </td>
+
+                                            <td>
+                                                {% if c.interest_score %}
+                                                {{ c.interest_score|floatformat:2 }}
+                                                {% else %}
+                                                -
+                                                {% endif %}
+                                            </td>
+
+                                            <!-- STATUS (balanced if/elif/else + single endif) -->
+                                            <td>
+                                                {% with s=c.status|default_if_none:''|lower %}
+                                                {% if 'needs_reply' in s %}
+                                                <span class="badge text-bg-danger">Needs reply</span>
+                                                {% elif 'review' in s %}
+                                                <span class="badge text-bg-warning text-dark">Review</span>
+                                                {% elif 'replied' in s %}
+                                                <span class="badge text-bg-success">Replied</span>
+                                                {% elif 'auto_replied' in s %}
+                                                <span class="badge text-bg-primary">Auto replied</span>
+                                                {% elif 'not_interested' in s %}
+                                                <span class="badge text-bg-secondary">Not interested</span>
+                                                {% elif s %}
+                                                <span class="badge text-bg-light text-dark">{{ s }}</span>
+                                                {% else %}
+                                                <span class="badge text-bg-light text-dark">New</span>
+                                                {% endif %}
+                                                {% endwith %}
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="7" class="text-center text-muted py-5">No comments available
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+
+                                </table>
+                            </div>
+                            {% if comments_page %}
+                            {% if comments_page.has_other_pages %}
+                            <div class="d-flex justify-content-end mt-3">
+                                <nav>
+                                    <ul class="pagination pagination-sm mb-0">
+                                        {% if comments_page.has_previous %}
+                                        <li class="page-item">
+                                            <a class="page-link"
+                                                href="?q={{ q }}&sort={{ sort }}&page={{ posts_page.number|default:'' }}&c_q={{ c_q|default:'' }}&c_sort={{ c_sort|default:'recent' }}&c_status={{ c_status|default:'' }}&c_page={{ comments_page.previous_page_number }}">
+                                                &laquo;
+                                            </a>
+                                        </li>
                                         {% else %}
-                                        <span class="badge text-bg-light text-dark">New</span>
+                                        <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
                                         {% endif %}
-                                        {% endwith %}
-                                    </td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="7" class="text-center text-muted py-5">No comments available</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
 
-                        </table>
+                                        {% for p in comments_page.paginator.page_range %}
+                                        <li class="page-item {% if p == comments_page.number %}active{% endif %}">
+                                            <a class="page-link"
+                                                href="?q={{ q }}&sort={{ sort }}&page={{ posts_page.number|default:'' }}&c_q={{ c_q|default:'' }}&c_sort={{ c_sort|default:'recent' }}&c_status={{ c_status|default:'' }}&c_page={{ p }}">
+                                                {{ p }}
+                                            </a>
+                                        </li>
+                                        {% endfor %}
+
+                                        {% if comments_page.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link"
+                                                href="?q={{ q }}&sort={{ sort }}&page={{ posts_page.number|default:'' }}&c_q={{ c_q|default:'' }}&c_sort={{ c_sort|default:'recent' }}&c_status={{ c_status|default:'' }}&c_page={{ comments_page.next_page_number }}">
+                                                &raquo;
+                                            </a>
+                                        </li>
+                                        {% else %}
+                                        <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                                        {% endif %}
+                                    </ul>
+                                </nav>
+                            </div>
+                            {% endif %}
+                            {% endif %}
+
+                        </section>
                     </div>
-                    {% if comments_page %}
-                    {% if comments_page.has_other_pages %}
-                    <div class="d-flex justify-content-end mt-3">
-                        <nav>
-                            <ul class="pagination pagination-sm mb-0">
-                                {% if comments_page.has_previous %}
-                                <li class="page-item">
-                                    <a class="page-link"
-                                        href="?q={{ q }}&sort={{ sort }}&page={{ posts_page.number|default:'' }}&c_q={{ c_q|default:'' }}&c_sort={{ c_sort|default:'recent' }}&c_status={{ c_status|default:'' }}&c_page={{ comments_page.previous_page_number }}">
-                                        &laquo;
-                                    </a>
-                                </li>
-                                {% else %}
-                                <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
-                                {% endif %}
-
-                                {% for p in comments_page.paginator.page_range %}
-                                <li class="page-item {% if p == comments_page.number %}active{% endif %}">
-                                    <a class="page-link"
-                                        href="?q={{ q }}&sort={{ sort }}&page={{ posts_page.number|default:'' }}&c_q={{ c_q|default:'' }}&c_sort={{ c_sort|default:'recent' }}&c_status={{ c_status|default:'' }}&c_page={{ p }}">
-                                        {{ p }}
-                                    </a>
-                                </li>
-                                {% endfor %}
-
-                                {% if comments_page.has_next %}
-                                <li class="page-item">
-                                    <a class="page-link"
-                                        href="?q={{ q }}&sort={{ sort }}&page={{ posts_page.number|default:'' }}&c_q={{ c_q|default:'' }}&c_sort={{ c_sort|default:'recent' }}&c_status={{ c_status|default:'' }}&c_page={{ comments_page.next_page_number }}">
-                                        &raquo;
-                                    </a>
-                                </li>
-                                {% else %}
-                                <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
-                                {% endif %}
-                            </ul>
-                        </nav>
-                    </div>
-                    {% endif %}
-                    {% endif %}
-
-                </section>
-            </div>
-        </main>
+            </main>
     </div>
 
     <!-- Mobile offcanvas nav -->
@@ -435,54 +525,54 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 
-<script>
+    <script>
 
-  async function runCommand(url) {
-    const button = event.target;
-    const originalText = button.textContent;
-    button.disabled = true;
-    button.textContent = "Running...";
+        async function runCommand(url) {
+            const button = event.target;
+            const originalText = button.textContent;
+            button.disabled = true;
+            button.textContent = "Running...";
 
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "X-CSRFToken": getCookie("csrftoken"),
-        },
-      });
+            try {
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": getCookie("csrftoken"),
+                    },
+                });
 
-      const data = await response.json();
-      alert(data.message);
+                const data = await response.json();
+                alert(data.message);
 
-      //  Recargar la página después de ejecutar correctamente el comando
-      location.reload();
+                //  Recargar la página después de ejecutar correctamente el comando
+                location.reload();
 
-    } catch (error) {
-      alert("Ocurrió un error al ejecutar el comando.");
-      console.error(error);
-    } finally {
-      // En caso de error, restaurar el botón
-      button.disabled = false;
-      button.textContent = originalText;
-    }
-  }
-
-  // Helper: obtener el token CSRF de Django
-  function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== "") {
-      const cookies = document.cookie.split(";");
-      for (let i = 0; i < cookies.length; i++) {
-        const cookie = cookies[i].trim();
-        if (cookie.substring(0, name.length + 1) === name + "=") {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
+            } catch (error) {
+                alert("Ocurrió un error al ejecutar el comando.");
+                console.error(error);
+            } finally {
+                // En caso de error, restaurar el botón
+                button.disabled = false;
+                button.textContent = originalText;
+            }
         }
-      }
-    }
-    return cookieValue;
-  }
-</script>
+
+        // Helper: obtener el token CSRF de Django
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                const cookies = document.cookie.split(";");
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === name + "=") {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
 
 </body>
 
