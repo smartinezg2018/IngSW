@@ -92,7 +92,8 @@ def post_instagram(post):
         # Step 1: Create media container
         creation_id = create_media_container(image_url, caption)
         print(f"Media container created with ID: {creation_id}")
-        
+        time.sleep(2)
+
         # Step 2: Publish the media
         publish_success = publish_media(creation_id)
         
@@ -257,40 +258,57 @@ def create_media_container(image_url, caption):
     return data["id"]
 
 
-def publish_media(creation_id):
+def publish_media(creation_id, retries=5, backoff=2):
     """
-    Publish the media container to Instagram.
-    
+    Publish the media container to Instagram with retry logic.
+
     Args:
-        creation_id: The creation ID from create_media_container
-    
+        creation_id (str): The creation ID from create_media_container
+        retries (int): Number of retry attempts if the API request fails
+        backoff (int | float): Base seconds to wait before retrying (increases each attempt)
+
     Returns:
         bool: True if successful, False otherwise
     """
+
     API_VERSION = "v21.0"
     url = f"https://graph.facebook.com/{API_VERSION}/{settings.IG_USER_ID}/media_publish"
-    
+
     payload = {
         "creation_id": creation_id,
         "access_token": settings.LONG_ACCESS_TOKEN
     }
-    
-    response = requests.post(url, params=payload, timeout=30)
-    data = response.json()
-    
-    print(f"Publish response: {data}")
-    
-    # Check for errors
-    if "error" in data:
-        error_msg = data["error"].get("message", "Unknown error")
-        print(f"Instagram API error (publish): {error_msg}")
-        return False
-    
-    if "id" not in data:
-        print(f"No media ID returned from publish: {data}")
-        return False
-    
-    return True
+
+    for attempt in range(1, retries + 1):
+        try:
+            print(f"Attempt {attempt}/{retries} - Publishing media...")
+            
+            response = requests.post(url, params=payload, timeout=30)
+            data = response.json()
+            print(f"Publish response: {data}")
+
+            # Check for API error
+            if "error" in data:
+                error_msg = data["error"].get("message", "Unknown error")
+                print(f"Instagram API error (publish): {error_msg}")
+
+            # Check for missing media ID
+            elif "id" not in data:
+                print(f"No media ID returned from publish: {data}")
+            else:
+                return True  # Success!
+
+        except requests.exceptions.RequestException as e:
+            print(f"Request error on attempt {attempt}: {e}")
+
+        # If not last attempt, wait before retrying
+        if attempt < retries:
+            wait_time = backoff * attempt
+            print(f"Retrying in {wait_time} seconds...")
+            time.sleep(wait_time)
+
+    print("Failed to publish media after multiple attempts.")
+    return False
 
 
 def get_published_media_id(caption, max_retries=3):
@@ -310,6 +328,8 @@ def get_published_media_id(caption, max_retries=3):
     params = {
         "fields": "id,caption,media_url,timestamp",
         "access_token": settings.LONG_ACCESS_TOKEN,
+        "limit": 1,
+
     }
     
     for attempt in range(max_retries):
@@ -338,7 +358,7 @@ def get_published_media_id(caption, max_retries=3):
         except requests.exceptions.RequestException as e:
             print(f"Error retrieving media ID (attempt {attempt + 1}/{max_retries}): {e}")
             if attempt < max_retries - 1:
-                time.sleep(2)
+                time.sleep(4)
     
     return None
     

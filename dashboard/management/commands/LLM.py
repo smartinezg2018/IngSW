@@ -3,7 +3,8 @@ from django.conf import settings
 import requests
 from django.core.management.base import BaseCommand
 from dashboard.models import Post, Comment
-
+import requests
+import time
 
 long_access_token = settings.LONG_ACCESS_TOKEN
 api_key = settings.GOOGLE_API
@@ -19,36 +20,86 @@ def instagram_response(response,comment_id):
     data = response.json()
     return data
 
-def generate_hr_response(post_description, comment_text):
 
-        prompt = f"""
-                Actúa como reclutador de RRHH profesional y amable.
 
-                Contexto del puesto: {post_description}
-                Pregunta/comentario: {comment_text}
+def generate_hr_response(post_description, comment_text, max_retries=6):
+    prompt = f"""
+    Actúa como reclutador de RRHH profesional y amable.
 
-                Instrucciones:
-                - Responde de forma útil, cordial y CORTA
-                - Si no tienes información suficiente en el contexto, responde "No tengo contexto suficiente para responder esa pregunta específica"
-                - Basa tu respuesta únicamente en la información del puesto proporcionada
-                - Máximo 2-3 oraciones
-                """
-        # Replace with your actual API key
-        api_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
-        
+    Contexto del puesto: {post_description}
+    Pregunta/comentario: {comment_text}
 
-        payload = {
-            "contents": [{"parts": [{"text": prompt}]}]
-        }
+    Instrucciones:
+    - Responde de forma útil, cordial y CORTA
+    - Si no tienes información suficiente en el contexto, responde "No tengo contexto suficiente para responder esa pregunta específica"
+    - Basa tu respuesta únicamente en la información del puesto proporcionada
+    - Máximo 2-3 oraciones
+    """
 
+    api_url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+    
+    payload = {
+        "contents": [{"parts": [{"text": prompt}]}],
+    }
+    
+    headers = {
+        "Content-Type": "application/json"
+    }
+    
+    for attempt in range(max_retries):
         try:
-            response = requests.post(api_url, json=payload)
+            response = requests.post(
+                api_url, 
+                json=payload, 
+                headers=headers,
+                timeout=30
+            )
             response.raise_for_status()
+            
             result = response.json()
-            text = result["candidates"][0]["content"]["parts"][0]["text"]
-            return text
-        except Exception as e:
-            print(f"An error occurred: {e}")
+            
+            # Validación más robusta de la respuesta
+            if "candidates" in result and len(result["candidates"]) > 0:
+                candidate = result["candidates"][0]
+                if "content" in candidate and "parts" in candidate["content"]:
+                    text = candidate["content"]["parts"][0].get("text", "")
+                    if text.strip():
+                        return text
+            
+            # Si llegamos aquí, la respuesta no tiene el formato esperado
+            print(f"Respuesta inesperada en intento {attempt + 1}: {result}")
+            
+        except requests.exceptions.Timeout:
+            print(f"Timeout en intento {attempt + 1}")
+            
+        except requests.exceptions.HTTPError as e:
+            print(f"Error HTTP en intento {attempt + 1}: {e}")
+            # Si es un error 429 (rate limit), espera más tiempo
+            if response.status_code == 429:
+                wait_time = (attempt + 1) * 5
+                print(f"Rate limit alcanzado. Esperando {wait_time} segundos...")
+                time.sleep(wait_time)
+            elif response.status_code >= 500:
+                # Error del servidor, reintenta
+                time.sleep(2 ** attempt)  # Backoff exponencial
+            else:
+                # Error del cliente (400s), no reintentar
+                break
+                
+        except requests.exceptions.RequestException as e:
+            print(f"Error de conexión en intento {attempt + 1}: {e}")
+            
+        except (KeyError, IndexError) as e:
+            print(f"Error parseando respuesta en intento {attempt + 1}: {e}")
+        
+        # Espera antes de reintentar (backoff exponencial)
+        if attempt < max_retries - 1:
+            wait_time = 2 ** attempt  # 1s, 2s, 4s...
+            print(f"Reintentando en {wait_time} segundos...")
+            time.sleep(wait_time)
+    
+    # Si todos los intentos fallan
+    return "Lo siento, no puedo responder en este momento. Por favor, intenta nuevamente más tarde."
 
 
 # Usage:
